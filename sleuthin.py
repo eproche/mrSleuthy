@@ -206,7 +206,7 @@ def output(config, spring, mds, iden, con, sep, vis, no_thumb, explore, thresh1,
 		clusmat = clus[0]
 		clusim = clus[1]
 		click.secho('generating confusion matrix output at con_mat.png\n', fg='blue', blink=False)
-		draw_con(clusmat, config.get('images'), clusim, sep)
+		draw_con(clusmat, config.get('images'), clusim, sep, no_thumb)
 	if spring: 
 		click.secho('displaying spring graph\n', fg='yellow', blink=False)
 		draw_spring_graph(results, thresh1, sep)
@@ -217,7 +217,7 @@ def output(config, spring, mds, iden, con, sep, vis, no_thumb, explore, thresh1,
 		res_vis(results, config.get('images'), thresh2)
 		click.secho('vis.js formatted graph sent to nodes.txt and edges.txt\n', fg='green')
 	if explore:
-		explore(results, thresh1, thresh2, step)
+		explorate(results, thresh1, thresh2, step, sep)
 		click.secho('Saving exploration to explore_results', fg='green', blink=False)
 
 def read_csv(path):
@@ -317,8 +317,8 @@ def read_words(answers, rem, des, stem):
 #writes clean version of original text, selected POS, and counts for each POS
 #configured for mturk format, lists descriptions them reminded
 def clean_write(answers):
-	"""Writes answers to word tables, original text, 
-	POS-filtered words, Counts for each POS """
+    """Writes answers to word tables, original text, 
+    POS-filtered words, Counts for each POS """
     document = Document() #microsoft word format
     document.add_heading('Listings Responses and Word Counts', 0)
     document.add_paragraph(
@@ -520,7 +520,7 @@ def draw_id(results, stored_images, thumb):
 	del draw
 	im.save('iden_mat.png', "PNG")
 
-def draw_con(results, stored_images, clusim, sep):
+def draw_con(results, stored_images, clusim, sep, thumb):
 	"""draw confusion matrix separating two categories, determined by sep"""
 	#normalize confusion matrix
 	images = clusim 
@@ -539,25 +539,26 @@ def draw_con(results, stored_images, clusim, sep):
 	y = dim[0]
 	im = Image.new('RGB', ((x+2)*50, (y+2)*50), (255, 255, 255))
 	draw = ImageDraw.Draw(im)
-	click.secho('drawing thumbnails', fg='blue', blink=False)
-	for j in range(y):
-		sys.stdout.write(".")
+	if thumb:
+		click.secho('drawing thumbnails', fg='blue', blink=False)
+		for j in range(y):
+			sys.stdout.write(".")
+			sys.stdout.flush()
+			thumb = Image.open(thumbs_y[j])
+			thumb = thumb.resize((50, 50), Image.ANTIALIAS)
+			im.paste(thumb, box=(0, 50*j+50, 50, 50*j+100))
+			im.paste(thumb, box=(50*x+50, 50*j+50, 50*x+100, 50*j+100))
+		sys.stdout.write('\n')
 		sys.stdout.flush()
-		thumb = Image.open(thumbs_y[j])
-		thumb = thumb.resize((50, 50), Image.ANTIALIAS)
-		im.paste(thumb, box=(0, 50*j+50, 50, 50*j+100))
-		im.paste(thumb, box=(50*x+50, 50*j+50, 50*x+100, 50*j+100))
-	sys.stdout.write('\n')
-	sys.stdout.flush()
-	for i in range(x):
-		sys.stdout.write(".")
+		for i in range(x):
+			sys.stdout.write(".")
+			sys.stdout.flush()
+			thumb = Image.open(thumbs_x[i]) #images_for_ident
+			thumb = thumb.resize((50, 50), Image.ANTIALIAS)
+			im.paste(thumb, box=(50*i+50, 0, 50*i+100, 50))
+			im.paste(thumb, box=(50*i+50, 50*y+50, 50*i+100, 50*y+100))
+		sys.stdout.write('\n')
 		sys.stdout.flush()
-		thumb = Image.open(thumbs_x[i]) #images_for_ident
-		thumb = thumb.resize((50, 50), Image.ANTIALIAS)
-		im.paste(thumb, box=(50*i+50, 0, 50*i+100, 50))
-		im.paste(thumb, box=(50*i+50, 50*y+50, 50*i+100, 50*y+100))
-	sys.stdout.write('\n')
-	sys.stdout.flush()
 	#Draw color squares
 	#Images and scenes tend to have lower similarities
 	#Colors are adjusted to (0, .2, .4, .6) scale to compensate
@@ -585,7 +586,7 @@ def draw_con(results, stored_images, clusim, sep):
 			draw.rectangle([k*50+50, j*50+50, k*50+100, j*50+100], fill=(int(r_amount), int(g_amount), int(b_amount)), outline=None)
 			draw.text((k*50+58, j*50+80), score, fill=(0,0,0))
 	del draw
-	im.save('con_mat.png')
+	im.save('con_mat.png', 'PNG')
 
 def draw_spring_graph(results, thresh, sep):
 	"""Draw graph in spring layoout, 
