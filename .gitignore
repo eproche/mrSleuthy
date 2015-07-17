@@ -1,0 +1,4 @@
+venv/
+misc_ignored/
+mrSleuthy.egg-info/
+mturk_images/

@@ -1,0 +1,49 @@
+<html>
+<head>
+    <script type="text/javascript" src="/Users/epr397/lewpealab/image2score/graph_vis/vis.js"></script>
+    <link href="/Users/epr397/lewpealab/image2score/graph_vis/vis.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        #mynetwork {
+            width: 1300px;
+            height: 1000px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head> 
+<body>
+
+<div id="mynetwork"></div>
+
+<script type="text/javascript">
+
+    //create an array with nodes
+    var nodes = new vis.DataSet([
+
+    ]);
+
+    // create an array with edges
+    var edges = new vis.DataSet([
+
+    ]);
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+
+    // provide the data in the vis format
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+        nodes:{
+            shape: 'image'
+        }
+    };
+
+    // initialize your network!
+    var network = new vis.Network(container, data, options);
+</script>
+</body>
+</html>
+
