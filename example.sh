@@ -44,8 +44,8 @@ echo
 echo "First, we will read and preprocess study.csv"
 sleep 1
 echo
-echo "sleuth readin 'csv/study.csv'"
-sleuth readin 'csv/study.csv'
+echo "sleuth readin 'study.csv'"
+sleuth readin 'study.csv'
 echo
 sleep 1
 echo "Now we will generate a tf-idf similarity matrix"
@@ -58,10 +58,10 @@ sleep 1
 echo "Let's generate some visual outputs"
 sleep 1
 echo
-echo 'sleuth output --mds --spring --thresh1=0.07 --sep=200'
+echo 'sleuth output --mds --spring --thresh1=0.1 --sep=200'
 echo
 echo 'close figure displays to continue'
-sleuth output --mds --spring --thresh1=0.07 --sep=200
+sleuth output --mds --spring --thresh1=0.1 --sep=200
 echo 
 echo "let's do some exploring!"
 sleep 1
@@ -89,13 +89,9 @@ echo
 sleep 2
 echo "However, we've saved the results of study.csv in a pickle, so running word2vec will grab from the pickle jar"
 echo
-sleep 2
-echo "sleuth word2vec"
-sleuth word2vec
-echo
 sleep 1
-echo "sleuth output --mds --spring --thresh1=0.5 --sep=200"
-sleuth output --mds --spring --thresh1=0.5 --sep=200
+echo "sleuth output --mds --spring --thresh1=0.5 --sep=200 --pic='pickle_study.csv'"
+sleuth output --mds --spring --thresh1=0.5 --sep=200 --pic='pickle_study.csv'
 sleep 1
 echo
 echo "wow cool"
